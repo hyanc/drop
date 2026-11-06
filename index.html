@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Filenames Drop</title>
+		<meta charset="utf-8">
+		<meta content="Page Description" name="description">
+		<meta content="notranslate" name="google">
+		<meta content="yes" name="mobile-web-app-capable">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="#FFFFFF" name="theme-color" media="(prefers-color-scheme: light)">
+		<meta content="#1E1E1E" name="theme-color" media="(prefers-color-scheme: dark)">
+		<meta content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=0,viewport-fit=cover" name="viewport">
+		<meta content="#FFFFFF" name="theme-color">
+
+		<meta name="msapplication-navbutton-color" content="#FFFFFF">
+		<meta name="apple-mobile-web-app-status-bar-style" content="white">
+		<meta name="color-scheme" content="light">		
+		<meta content="telephone=no" name="format-detection">
+		<style>
+			html {-webkit-text-size-adjust:100%}
+			body {font-family:arial;}
+			#drop {border:solid 1px black;width:20vw;height:20vw;}
+			main {display: flex;gap: 20px;align-items: flex-start;}
+			#drop {display: flex;justify-content: center;align-items: center; font-size:6vw;color:grey}
+			#drop, #list {flex: 1;min-height:150px;box-sizing: border-box;}
+			form {margin:0;}
+			#drop, form input {cursor:pointer}
+			@media screen and (max-width: 1000px) { /*phone size below 1000 pixel*/
+				
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Drop Selected Files</h1>
+		<main>
+			<div id="drop">+</div>
+			<div id="list"></div>
+			<form id="tool">
+			</form>
+		</main>
+		<script type="text/javascript">
+			const dropZone = document.getElementById('drop');
+			const fileList = document.getElementById('list');
+			const tools = document.getElementsByTagName('form')[0];
+			const tool = document.getElementById('tool');
+			let original = [];
+			['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+				dropZone.addEventListener(eventName, (e) => e.preventDefault(), false);
+			});
+			dropZone.addEventListener('drop', (e) => {
+				const files = e.dataTransfer.files;
+				fileList.innerHTML = '';
+				for (let i = 0; i < files.length; i++) {
+					original.push(files[i].name);
+					fileList.innerHTML += files[i].name + '<br>';
+				}
+				original.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+				tool.innerHTML = "<strong>" + files.length + "</strong> file names<br><br>";
+				tool.innerHTML += "<input type='button' onclick='makeOri()' value='Sorted' /> ";
+				tool.innerHTML += "<input type='button' onclick='stripX()' value='Strip Extension' />";
+			});
+			function makeOri() {
+				fileList.innerHTML = '';
+				for (let i = 0; i < original.length; i++) {
+					fileList.innerHTML += original[i] + '<br>';
+				}
+			}
+			function stripX() {
+				fileList.innerHTML = '';
+				for (let i = 0; i < original.length; i++) {
+					let fullName = original[i];
+					let cleanName = fullName.substring(0, fullName.lastIndexOf('.'));
+					fileList.innerHTML += cleanName + '<br>';
+				}
+			}
+		</script>
+	</body>
+</html>
